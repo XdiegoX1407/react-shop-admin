@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
+import useFetch from '@hooks/useFetch';
+import endPoints from '@services/api';
 
-const Paginate = ({ totalItems, itemsPerPage, neighbours, setOffset }) => {
+const Paginate = ({ setOffset }) => {
+  const totalItems = useFetch(endPoints.products.getProducts(0, 0)).length;
+  const itemsPerPage = 15;
+  const neighbours = 3;
   const items = [];
   const [current, setCurrent] = useState(1);
   const totalPage = Math.ceil(totalItems / itemsPerPage);
