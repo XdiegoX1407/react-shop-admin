@@ -1,35 +1,49 @@
-import { useState } from 'react';
-import { PlusIcon } from '@heroicons/react/solid';
+import { useState, useEffect } from 'react';
+import { PlusIcon, XCircleIcon } from '@heroicons/react/solid';
 import FormProduct from '@components/FormProduct';
 import Modal from '@common/Modal';
-import useFetch from '@hooks/useFetch';
+import axios from 'axios';
 import endPoints from '@services/api';
-import Paginate from '@components/Paginate';
 import useAlert from '@hooks/useAlert';
 import Alert from '@common/Alert';
-
-const PRODUCT_LIMIT = 15;
+import { deleteProduct } from '@services/api/products';
 
 export default function Product() {
   const [open, setOpen] = useState(false);
-  const [offsetProducts, setOffsetProducts] = useState(0);
   const { alert, setAlert, toggleAlert } = useAlert();
-  const products = useFetch(endPoints.products.getProducts(PRODUCT_LIMIT, offsetProducts), offsetProducts);
-  const totalProducts = useFetch(endPoints.products.getProducts(0, 0)).length;
 
-/*   const [product, setProduct] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     async function getProductsEffect() {
       const response = await axios.get(endPoints.products.getAllProducts);
-      setProduct(response.data);
+      setProducts(response.data);
     }
     try {
       getProductsEffect();
     } catch (error) {
       console.log(error);
     }
-  }, [alert]); */
+  }, [alert]);
+
+  const handleDelete = (id) => {
+    deleteProduct(id).then(() => {
+      setAlert({
+        active: true,
+        message: 'Delete product successfully',
+        type: 'success',
+        autoClose: true,
+      });
+    })
+    .catch((error) => {
+      setAlert({
+        active: true,
+        message: error.message,
+        type: 'error',
+        autoClose: false,
+      });
+    });
+  };
 
   return (
     <>
@@ -104,15 +118,16 @@ export default function Product() {
                         </a>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Delete
-                        </a>
+                        <XCircleIcon 
+                          className='flex-shrink-0 h-6 w-6 text-gray-400 cursor-pointer'
+                          aria-hidden="true"
+                          onClick={() => handleDelete(product.id)}
+                        />
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              {totalProducts > 0 && <Paginate setOffset={setOffsetProducts}></Paginate>}
             </div>
           </div>
         </div>
