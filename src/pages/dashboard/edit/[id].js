@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import MainLayout from '@layout/MainLayout';
 import FormProduct from '@components/FormProduct';
 import { useRouter } from 'next/router';
 import axios from 'axios';
@@ -19,5 +20,9 @@ export default function Edit() {
     getProduct();
   }, [router?.isReady]);
 
-  return <FormProduct product={product} />;
+  return (
+    <MainLayout>
+      <FormProduct product={product} />
+    </MainLayout>
+  );
 }

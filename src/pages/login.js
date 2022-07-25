@@ -1,5 +1,10 @@
+import BasicLayout from '@layout/BasicLayout';
 import LoginPage from '@components/LoginPage';
 
 export default function Login() {
-  return <LoginPage />;
+  return (
+    <BasicLayout>
+      <LoginPage />
+    </BasicLayout>
+  );
 }

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlusIcon, XCircleIcon } from '@heroicons/react/solid';
+import Link from 'next/link';
+import MainLayout from '@layout/MainLayout';
 import FormProduct from '@components/FormProduct';
 import Modal from '@common/Modal';
 import axios from 'axios';
@@ -27,26 +29,27 @@ export default function Product() {
   }, [alert]);
 
   const handleDelete = (id) => {
-    deleteProduct(id).then(() => {
-      setAlert({
-        active: true,
-        message: 'Delete product successfully',
-        type: 'success',
-        autoClose: true,
+    deleteProduct(id)
+      .then(() => {
+        setAlert({
+          active: true,
+          message: 'Delete product successfully',
+          type: 'success',
+          autoClose: true,
+        });
+      })
+      .catch((error) => {
+        setAlert({
+          active: true,
+          message: error.message,
+          type: 'error',
+          autoClose: false,
+        });
       });
-    })
-    .catch((error) => {
-      setAlert({
-        active: true,
-        message: error.message,
-        type: 'error',
-        autoClose: false,
-      });
-    });
   };
 
   return (
-    <>
+    <MainLayout>
       <Alert alert={alert} handleClose={toggleAlert} />
       <div className="lg:flex lg:items-center lg:justify-between mb-8">
         <div className="flex-1 min-w-0">
@@ -113,16 +116,12 @@ export default function Product() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.id}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Edit
-                        </a>
+                        <Link href={`/dashboard/edit/${product.id}`}>
+                          <a className="text-indigo-600 hover:text-indigo-900">Edit</a>
+                        </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <XCircleIcon 
-                          className='flex-shrink-0 h-6 w-6 text-gray-400 cursor-pointer'
-                          aria-hidden="true"
-                          onClick={() => handleDelete(product.id)}
-                        />
+                        <XCircleIcon className="flex-shrink-0 h-6 w-6 text-gray-400 cursor-pointer" aria-hidden="true" onClick={() => handleDelete(product.id)} />
                       </td>
                     </tr>
                   ))}
@@ -135,6 +134,6 @@ export default function Product() {
       <Modal open={open} setOpen={setOpen}>
         <FormProduct setOpen={setOpen} setAlert={setAlert} />
       </Modal>
-    </>
+    </MainLayout>
   );
 }
